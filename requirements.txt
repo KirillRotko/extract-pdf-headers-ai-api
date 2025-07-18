@@ -1,0 +1,11 @@
+torch
+torchvision
+transformers
+sentencepiece
+opencv-python-headless
+pdf2image
+fastapi
+uvicorn
+Pillow
+protobuf>=3.20.0
+python-multipart
