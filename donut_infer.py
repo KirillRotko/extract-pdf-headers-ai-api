@@ -8,10 +8,15 @@ def load_model():
     model = VisionEncoderDecoderModel.from_pretrained("naver-clova-ix/donut-base-finetuned-docvqa")
     return processor, model
 
+def clean_result(result: str, prompt: str) -> str:
+    print('Clean results')
+    return result.replace(prompt, "").strip()
+
 def extract_text_from_image(image: Image.Image) -> str:
     processor, model = load_model()
     image = image.convert("RGB")
-    task_prompt = "<s_docvqa><s_question>List all headings or section titles visible in the image. Include text that looks like a title based on font size or style. Provide a numbered list.</s_question><s_answer>"
+    question = "List all headings or section titles visible in the image. Include text that looks like a title based on font size or style. Provide a numbered list."
+    task_prompt = f"<s_docvqa><s_question>{question}</s_question><s_answer>"
     inputs = processor(image, task_prompt, return_tensors="pt")
 
     outputs = model.generate(
@@ -23,7 +28,4 @@ def extract_text_from_image(image: Image.Image) -> str:
 
     result = processor.decode(outputs[0], skip_special_tokens=True)
 
-    return clean_result(result, task_prompt)
-
-def clean_result(result: str, prompt: str) -> str:
-    return result.replace(prompt, "").strip()
+    return clean_result(result, question)
